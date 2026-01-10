@@ -50,6 +50,18 @@ const md: MarkdownIt = new MarkdownIt({
   }
 })
 
+md.renderer.rules.heading_open = function (tokens, idx) {
+  const level = tokens[idx].tag
+  const text = tokens[idx + 1].content
+  const id = text
+    .toLowerCase()
+    .replace(/[^\w\s\u4e00-\u9fa5-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+  return `<${level} id="${id}">`
+}
+
 const props = defineProps<{
   content: string
 }>()

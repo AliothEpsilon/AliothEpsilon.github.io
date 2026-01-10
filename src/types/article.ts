@@ -19,3 +19,10 @@ export interface ArticleListItem {
   category?: string
   excerpt: string
 }
+
+export interface TOCItem {
+  id: string
+  text: string
+  level: number
+  children?: TOCItem[]
+}

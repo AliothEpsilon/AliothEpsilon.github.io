@@ -31,14 +31,16 @@ blog/
 │   │   ├── MarkdownRenderer.vue  # Markdown 渲染器
 │   │   ├── ReadingProgressBar.vue  # 阅读进度条
 │   │   ├── SearchInput.vue  # 搜索输入框
+│   │   ├── TableOfContents.vue  # 目录导航组件
 │   │   └── ThemeToggle.vue # 主题切换组件
 │   ├── composables/     # 组合式函数
 │   │   └── useTheme.ts  # 主题管理
 │   ├── types/           # TypeScript 类型定义
-│   │   └── article.ts   # 文章相关类型
+│   │   └── article.ts   # 文章相关类型（Article、ArticleMeta、ArticleListItem、TOCItem）
 │   ├── utils/           # 工具函数
 │   │   ├── aggregation.ts # 标签和分类聚合工具
 │   │   ├── article.ts   # Frontmatter 解析工具
+│   │   ├── parseTOC.ts  # 目录解析工具
 │   │   └── search.ts    # 搜索算法工具
 │   ├── views/           # 页面
 │   │   ├── Article.vue  # 文章详情页
@@ -204,10 +206,21 @@ console.log('Hello, World!')
 - ✅ 文章详情页集成
 - ✅ CSS 变量支持（进度条颜色）
 
+### 第八阶段（已完成）
+
+- ✅ 目录导航组件（TableOfContents.vue）
+- ✅ 目录解析工具（parseTOC.ts）
+- ✅ 目录项类型定义（TOCItem）
+- ✅ 多级标题支持（1-6 级）
+- ✅ 目录项点击跳转（平滑滚动）
+- ✅ 滚动时自动高亮当前章节
+- ✅ 固定定位（右侧悬浮）
+- ✅ 响应式设计（小屏幕自动隐藏）
+- ✅ 文章详情页集成
+
 ### 后续计划
 
 - [ ] 评论系统集成
-- [ ] 目录导航（TOC）
 - [ ] SEO 优化
 - [ ] Sitemap 生成
 - [ ] RSS Feed 生成

@@ -1,15 +1,18 @@
 <template>
-  <div class="article" v-if="article">
-    <h1 class="article-title">{{ article.title }}</h1>
-    <div class="article-meta">
-      <span class="article-date">{{ formatDate(article.date) }}</span>
-      <span v-if="article.category" class="article-category">{{ article.category }}</span>
+  <div class="article-container" v-if="article">
+    <div class="article-content">
+      <h1 class="article-title">{{ article.title }}</h1>
+      <div class="article-meta">
+        <span class="article-date">{{ formatDate(article.date) }}</span>
+        <span v-if="article.category" class="article-category">{{ article.category }}</span>
+      </div>
+      <div v-if="article.tags && article.tags.length > 0" class="article-tags">
+        <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
+      </div>
+      <MarkdownRenderer :content="article.content" />
+      <RouterLink to="/" class="back-link">← 返回首页</RouterLink>
     </div>
-    <div v-if="article.tags && article.tags.length > 0" class="article-tags">
-      <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
-    </div>
-    <MarkdownRenderer :content="article.content" />
-    <RouterLink to="/" class="back-link">← 返回首页</RouterLink>
+    <TableOfContents :items="toc" />
   </div>
   <div v-else class="not-found">
     <h1>文章未找到</h1>
@@ -21,11 +24,15 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownRenderer from '../components/MarkdownRenderer.vue'
+import TableOfContents from '../components/TableOfContents.vue'
 import { parseFrontmatter, formatDate } from '../utils/article'
+import { parseTOC } from '../utils/parseTOC'
 import type { Article } from '../types/article'
+import type { TOCItem } from '../types/article'
 
 const route = useRoute()
 const article = ref<Article | null>(null)
+const toc = ref<TOCItem[]>([])
 
 onMounted(async () => {
   const slug = route.params.slug as string
@@ -37,6 +44,7 @@ onMounted(async () => {
     if (articleModules[articlePath]) {
       const content = await articleModules[articlePath]() as string
       article.value = parseFrontmatter(content, slug)
+      toc.value = parseTOC(content)
     }
   } catch (error) {
     console.error('Failed to load article:', error)
@@ -45,9 +53,14 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.article {
+.article-container {
+  position: relative;
   max-width: 800px;
   margin: 0 auto;
+}
+
+.article-content {
+  max-width: 800px;
 }
 
 .article-title {
