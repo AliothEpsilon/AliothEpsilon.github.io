@@ -181,6 +181,10 @@ const addLineNumbers = () => {
   border: 1px solid var(--code-border);
 }
 
+[data-theme="dark"] .markdown-renderer :deep(code) {
+  background-color: var(--code-bg-secondary);
+}
+
 .markdown-renderer :deep(pre) {
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
@@ -220,12 +224,21 @@ const addLineNumbers = () => {
   flex: 1;
   margin: 0 !important;
   box-sizing: border-box;
-  min-height: calc(1.6em * 0.9);
   color: var(--code-text) !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code) {
+  background-color: var(--code-bg-secondary) !important;
 }
 
 .markdown-renderer :deep(pre code .hljs) {
   color: var(--code-text) !important;
+  line-height: 1.6 !important;
+  display: block;
 }
 
 .markdown-renderer :deep(pre code .hljs-keyword),
@@ -271,6 +284,14 @@ const addLineNumbers = () => {
 
 .markdown-renderer :deep(pre code .hljs-selector-pseudo) {
   color: #6f42c1 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-section) {
+  color: #005cc5 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-bullet) {
+  color: #e36209 !important;
 }
 
 .markdown-renderer :deep(pre code .hljs-tag) {
@@ -322,6 +343,14 @@ const addLineNumbers = () => {
   color: #d2a8ff !important;
 }
 
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-section) {
+  color: #79c0ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-bullet) {
+  color: #ffa657 !important;
+}
+
 [data-theme="dark"] .markdown-renderer :deep(pre code .hljs-tag) {
   color: #7ee787 !important;
 }
@@ -334,6 +363,9 @@ const addLineNumbers = () => {
   padding: var(--spacing-md) var(--spacing-sm) var(--spacing-md) 0 !important;
   text-align: right;
   border-right: 1px solid var(--code-border) !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
   background-color: var(--code-bg-secondary) !important;
   user-select: none;
   overflow: hidden;
@@ -341,6 +373,11 @@ const addLineNumbers = () => {
   display: flex !important;
   flex-direction: column;
   justify-content: flex-start;
+  margin: 0 !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(.line-numbers) {
+  background-color: var(--code-bg) !important;
 }
 
 .markdown-renderer :deep(.line-number) {
@@ -352,7 +389,6 @@ const addLineNumbers = () => {
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box;
-  min-height: calc(1.6em * 0.9);
   align-self: flex-end;
 }
 

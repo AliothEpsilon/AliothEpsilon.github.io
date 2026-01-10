@@ -91,18 +91,19 @@ function getTagSizeClass(count: number): string {
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-md);
   background-color: var(--color-bg-secondary);
-  border-radius: var(--border-radius-md);
+  border-radius: 1.5rem;
   text-decoration: none;
   color: var(--color-text);
-  transition: all var(--transition-fast);
+  transition: all 0.3s ease;
   border: 1px solid var(--color-border);
 }
 
 .tag-item:hover {
   background-color: var(--color-primary);
   color: var(--color-primary-text);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px -4px rgb(0 0 0 / 0.15), 0 4px 8px -2px rgb(0 0 0 / 0.1);
+  border-color: var(--color-primary);
 }
 
 .tag-name {
@@ -113,8 +114,8 @@ function getTagSizeClass(count: number): string {
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
   background-color: var(--color-bg-tertiary);
-  padding: 2px 6px;
-  border-radius: var(--border-radius-sm);
+  padding: 2px 8px;
+  border-radius: 1rem;
 }
 
 .tag-item:hover .tag-count {

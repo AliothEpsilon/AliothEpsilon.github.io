@@ -29,6 +29,7 @@ blog/
 │   │   ├── ArticleCard.vue    # 文章卡片
 │   │   ├── Layout.vue      # 布局组件
 │   │   ├── MarkdownRenderer.vue  # Markdown 渲染器
+│   │   ├── ReadingProgressBar.vue  # 阅读进度条
 │   │   ├── SearchInput.vue  # 搜索输入框
 │   │   └── ThemeToggle.vue # 主题切换组件
 │   ├── composables/     # 组合式函数
@@ -193,10 +194,19 @@ console.log('Hello, World!')
 - ✅ 复制按钮样式（图标、悬停效果、点击反馈）
 - ✅ TypeScript 类型安全（md 变量类型注解、highlight 函数返回类型）
 
+### 第七阶段（已完成）
+
+- ✅ 阅读进度条组件（ReadingProgressBar.vue）
+- ✅ 滚动监听和进度计算逻辑
+- ✅ 进度条样式（固定在顶部，3px 高度）
+- ✅ 进度条动画效果（平滑过渡）
+- ✅ 深色/浅色主题适配
+- ✅ 文章详情页集成
+- ✅ CSS 变量支持（进度条颜色）
+
 ### 后续计划
 
 - [ ] 评论系统集成
-- [ ] 阅读进度条
 - [ ] 目录导航（TOC）
 - [ ] SEO 优化
 - [ ] Sitemap 生成

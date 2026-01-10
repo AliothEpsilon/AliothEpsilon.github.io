@@ -19,6 +19,7 @@
         </nav>
       </div>
     </header>
+    <ReadingProgressBar />
     <main class="main">
       <div class="container">
         <slot />
@@ -36,6 +37,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import ThemeToggle from './ThemeToggle.vue'
+import ReadingProgressBar from './ReadingProgressBar.vue'
 import { useTheme } from '../composables/useTheme'
 
 const currentYear = computed(() => new Date().getFullYear())
