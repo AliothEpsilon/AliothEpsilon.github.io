@@ -14,43 +14,50 @@
 
 ```
 blog/
-├── public/                 # 静态资源
+├── .github/              # GitHub 配置
+│   └── workflows/
+│       └── deploy.yml   # GitHub Actions 自动部署配置
+├── public/               # 静态资源
 ├── src/
-│   ├── assets/            # 资源文件
+│   ├── assets/          # 资源文件
 │   │   └── styles/
-│   │       ├── main.css   # 全局样式
+│   │       ├── main.css # 全局样式
 │   │       └── variables.css  # CSS 变量
-│   ├── components/        # 组件
+│   ├── components/      # 组件
 │   │   ├── ArticleCard.vue    # 文章卡片
 │   │   ├── Layout.vue      # 布局组件
 │   │   ├── MarkdownRenderer.vue  # Markdown 渲染器
 │   │   ├── SearchInput.vue  # 搜索输入框
 │   │   └── ThemeToggle.vue # 主题切换组件
-│   ├── composables/       # 组合式函数
-│   │   └── useTheme.ts    # 主题管理
-│   ├── types/             # TypeScript 类型定义
-│   │   └── article.ts     # 文章相关类型
-│   ├── utils/             # 工具函数
+│   ├── composables/     # 组合式函数
+│   │   └── useTheme.ts  # 主题管理
+│   ├── types/           # TypeScript 类型定义
+│   │   └── article.ts   # 文章相关类型
+│   ├── utils/           # 工具函数
 │   │   ├── aggregation.ts # 标签和分类聚合工具
-│   │   ├── article.ts     # Frontmatter 解析工具
-│   │   └── search.ts      # 搜索算法工具
-│   ├── views/             # 页面
-│   │   ├── Article.vue    # 文章详情页
+│   │   ├── article.ts   # Frontmatter 解析工具
+│   │   └── search.ts    # 搜索算法工具
+│   ├── views/           # 页面
+│   │   ├── Article.vue  # 文章详情页
 │   │   ├── Categories.vue # 分类列表页
-│   │   ├── Category.vue   # 分类详情页
-│   │   ├── Home.vue       # 首页
-│   │   ├── Search.vue     # 搜索结果页
-│   │   ├── Tag.vue        # 标签详情页
-│   │   └── Tags.vue       # 标签列表页
-│   ├── App.vue            # 根组件
-│   ├── main.ts            # 入口文件
-│   └── vite-env.d.ts      # TypeScript 类型声明
-├── articles/              # Markdown 文章源文件
-├── index.html
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── tsconfig.node.json
+│   │   ├── Category.vue # 分类详情页
+│   │   ├── Home.vue     # 首页
+│   │   ├── Search.vue   # 搜索结果页
+│   │   ├── Tag.vue      # 标签详情页
+│   │   └── Tags.vue     # 标签列表页
+│   ├── App.vue          # 根组件
+│   ├── main.ts          # 入口文件
+│   └── vite-env.d.ts    # TypeScript 类型声明
+├── articles/            # Markdown 文章源文件
+├── .gitignore           # Git 忽略文件配置
+├── LICENSE              # MIT 开源许可证
+├── index.html           # HTML 入口文件
+├── package.json         # 项目配置和依赖
+├── package-lock.json    # 依赖版本锁定文件
+├── tsconfig.json        # TypeScript 配置
+├── tsconfig.node.json   # Node.js TypeScript 配置
+├── vite.config.ts       # Vite 构建配置
+└── README.md            # 项目文档
 ```
 
 ## 快速开始
@@ -109,6 +116,14 @@ console.log('Hello, World!')
 
 
 ## 功能特性
+
+### 版权保护（已完成）
+
+- ✅ MIT 开源许可证声明（LICENSE）
+- ✅ 页面版权声明（HTML meta 标签）
+- ✅ 页脚版权信息和许可证提示
+- ✅ 法律保护框架
+- ✅ GitHub Actions 自动部署配置
 
 ### 第一阶段（已完成）
 
@@ -196,18 +211,35 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - run: npm install
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v3
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          destination_dir: .
 ```
+
+**部署说明**：
+- 使用 hash 路由模式（`createWebHashHistory`）避免 GitHub Pages 路由问题
+- 自动部署到 `gh-pages` 分支的根目录
+- 推送到 `main` 分支后自动触发部署流程
 
 ## 许可证
 
