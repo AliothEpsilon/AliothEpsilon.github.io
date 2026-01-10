@@ -8,8 +8,6 @@ import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js/lib/core'
 import 'highlight.js/styles/github.css'
 import 'highlight.js/styles/github-dark.css'
-import 'katex/dist/katex.min.css'
-import markdownItKatex from 'markdown-it-katex'
 import javascript from 'highlight.js/lib/languages/javascript'
 import typescript from 'highlight.js/lib/languages/typescript'
 import python from 'highlight.js/lib/languages/python'
@@ -50,14 +48,6 @@ const md: MarkdownIt = new MarkdownIt({
     }
     return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`
   }
-})
-
-md.use(markdownItKatex, {
-  throwOnError: false,
-  errorColor: '#cc0000',
-  displayMode: false,
-  output: 'html',
-  strict: false
 })
 
 md.renderer.rules.heading_open = function (tokens, idx) {
@@ -148,8 +138,11 @@ const addLineNumbers = () => {
 
 <style scoped>
 .markdown-renderer {
-  line-height: 1.8;
   color: var(--color-text);
+}
+
+.markdown-renderer :deep(p) {
+  margin-bottom: var(--spacing-lg);
 }
 
 .markdown-renderer :deep(h1),
@@ -493,45 +486,5 @@ const addLineNumbers = () => {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: var(--spacing-2xl) 0;
-}
-
-.markdown-renderer :deep(.katex) {
-  color: var(--color-text);
-}
-
-.markdown-renderer :deep(.katex-display) {
-  margin: var(--spacing-lg) 0;
-}
-
-.markdown-renderer :deep(.katex .op-limit) {
-  vertical-align: 0;
-}
-
-.markdown-renderer :deep(.katex .op-limit > .vlist-t) {
-  text-align: center;
-}
-
-.markdown-renderer :deep(.katex .vlist-t) {
-  line-height: 1.1;
-}
-
-.markdown-renderer :deep(.katex .vlist-r) {
-  vertical-align: 0;
-}
-
-.markdown-renderer :deep(.katex .vlist) {
-  vertical-align: 0;
-}
-
-.markdown-renderer :deep(.katex .msupsub) {
-  font-size: 0.7em !important;
-}
-
-.markdown-renderer :deep(.katex .msupsub > .vlist-t) {
-  line-height: 1.1;
-}
-
-[data-theme="dark"] .markdown-renderer :deep(.katex) {
-  color: var(--color-text);
 }
 </style>
