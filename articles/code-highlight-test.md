@@ -8,8 +8,6 @@ tags:
 excerpt: 这篇文章用于测试代码高亮、行号和复制按钮功能。
 ---
 
-# 代码高亮测试
-
 ## JavaScript 代码
 
 ```javascript
