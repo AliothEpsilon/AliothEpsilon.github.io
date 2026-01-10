@@ -10,6 +10,7 @@
 - **Vue Router** - Vue 官方路由
 - **Markdown-it** - Markdown 解析器
 - **Highlight.js** - 代码语法高亮
+- **MathJax** - 数学公式渲染
 
 ## 项目结构
 
@@ -18,7 +19,6 @@ blog/
 ├── .github/              # GitHub 配置
 │   └── workflows/
 │       └── deploy.yml   # GitHub Actions 自动部署配置
-├── public/               # 静态资源
 ├── src/
 │   ├── assets/          # 资源文件
 │   │   └── styles/
@@ -40,6 +40,8 @@ blog/
 │   ├── utils/           # 工具函数
 │   │   ├── aggregation.ts # 标签和分类聚合工具
 │   │   ├── article.ts   # Frontmatter 解析工具
+│   │   ├── markdownItMathJax.ts # Markdown-it 数学公式插件
+│   │   ├── mathjax.ts   # MathJax 加载和配置工具
 │   │   ├── parseTOC.ts  # 目录解析工具
 │   │   └── search.ts    # 搜索算法工具
 │   ├── views/           # 页面
@@ -117,6 +119,21 @@ date: 2025-01-10
 
 ```javascript
 console.log('Hello, World!')
+```
+
+数学公式示例：
+
+行内公式：$E = mc^2$
+
+块级公式：
+
+$$
+\int_{a}^{b} f(x) dx = F(b) - F(a)
+$$
+
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
 ```
 
 
@@ -217,6 +234,21 @@ console.log('Hello, World!')
 - ✅ 固定定位（右侧悬浮）
 - ✅ 响应式设计（小屏幕自动隐藏）
 - ✅ 文章详情页集成
+
+### 第九阶段（已完成）
+
+- ✅ 数学公式渲染系统（基于 MathJax 3.2.2）
+- ✅ Markdown-it 数学公式插件（markdownItMathJax.ts）
+- ✅ MathJax 加载和配置工具（mathjax.ts）
+- ✅ 行内公式支持（`$...$`）
+- ✅ 块级公式支持（`$$...$$`）
+- ✅ 公式渲染不受 Markdown 正文行高影响
+- ✅ 上标下标正确渲染
+- ✅ 积分符号上下界正确显示
+- ✅ 分式分子分母间距正常
+- ✅ 深色/浅色主题适配
+- ✅ CDN 动态加载（避免安装问题）
+- ✅ TypeScript 类型安全
 
 ### 后续计划
 

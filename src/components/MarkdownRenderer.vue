@@ -1,9 +1,9 @@
 <template>
-  <div class="markdown-renderer" v-html="renderedContent"></div>
+  <div class="markdown-renderer" ref="rendererRef" v-html="renderedContent"></div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, nextTick } from 'vue'
+import { computed, onMounted, nextTick, watch, ref } from 'vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js/lib/core'
 import 'highlight.js/styles/github.css'
@@ -21,6 +21,8 @@ import html from 'highlight.js/lib/languages/xml'
 import json from 'highlight.js/lib/languages/json'
 import yaml from 'highlight.js/lib/languages/yaml'
 import markdown from 'highlight.js/lib/languages/markdown'
+import markdownItMathJax from '../utils/markdownItMathJax'
+import { useMathJax } from '../utils/mathjax'
 
 hljs.registerLanguage('javascript', javascript)
 hljs.registerLanguage('typescript', typescript)
@@ -50,6 +52,8 @@ const md: MarkdownIt = new MarkdownIt({
   }
 })
 
+md.use(markdownItMathJax)
+
 md.renderer.rules.heading_open = function (tokens, idx) {
   const level = tokens[idx].tag
   const text = tokens[idx + 1].content
@@ -66,14 +70,26 @@ const props = defineProps<{
   content: string
 }>()
 
+const { loadMathJax, typeset } = useMathJax()
+const rendererRef = ref<HTMLElement>()
+
 const renderedContent = computed(() => {
   return md.render(props.content)
 })
 
-onMounted(() => {
+onMounted(async () => {
+  await loadMathJax()
   nextTick(() => {
     addCopyButtons()
     addLineNumbers()
+    typeset(rendererRef.value)
+  })
+})
+
+watch(() => props.content, async () => {
+  await loadMathJax()
+  nextTick(() => {
+    typeset(rendererRef.value)
   })
 })
 
@@ -486,5 +502,54 @@ const addLineNumbers = () => {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: var(--spacing-2xl) 0;
+}
+
+.markdown-renderer :deep(.mathjax-inline) {
+  display: inline;
+  margin: 0 0.1em;
+}
+
+.markdown-renderer :deep(.mathjax-display) {
+  display: block;
+  margin: var(--spacing-lg) 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.markdown-renderer :deep(.mjx-chtml) {
+  color: var(--color-text);
+  font-size: 1em;
+  line-height: 1.2;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(.mjx-chtml) {
+  color: var(--color-text);
+}
+
+.markdown-renderer :deep(.mjx-math) {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .markdown-renderer :deep(.mjx-math) {
+  color: var(--color-text);
+}
+
+.markdown-renderer :deep(.mjx-container) {
+  font-size: 100% !important;
+  margin: 0 !important;
+}
+
+.markdown-renderer :deep(.mjx-container[jax="CHTML"] > mjx-assistive-mml) {
+  border: 0 !important;
+  clip: auto !important;
+  display: block !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: auto !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 </style>

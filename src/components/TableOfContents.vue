@@ -18,7 +18,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import type { TOCItem } from '../types/article'
 
-const props = defineProps<{
+defineProps<{
   items: TOCItem[]
 }>()
 
