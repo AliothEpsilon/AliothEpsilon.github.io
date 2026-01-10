@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1 class="home-title">欢迎来到我的博客</h1>
-    <p class="home-subtitle">分享技术、记录成长</p>
+    <p class="home-subtitle">我在自己的无知面前心悦诚服</p>
     
     <div class="articles-list">
       <ArticleCard 
@@ -37,7 +37,8 @@ onMounted(async () => {
         date: article.date,
         tags: article.tags,
         category: article.category,
-        excerpt: article.excerpt || ''
+        excerpt: article.excerpt || '',
+        readingTime: article.readingTime
       }
     })
   )

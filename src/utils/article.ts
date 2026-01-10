@@ -1,4 +1,5 @@
 import type { Article, ArticleMeta } from '../types/article'
+import { calculateReadingTime } from './calculateReadingTime'
 
 export function parseFrontmatter(content: string, slug: string): Article {
   const result = parseSimpleFrontmatter(content)
@@ -8,7 +9,8 @@ export function parseFrontmatter(content: string, slug: string): Article {
     date: result.data.date || new Date().toISOString(),
     tags: result.data.tags || [],
     category: result.data.category || '',
-    excerpt: result.data.excerpt || generateExcerpt(result.content)
+    excerpt: result.data.excerpt || generateExcerpt(result.content),
+    readingTime: result.data.readingTime || calculateReadingTime(result.content).minutes
   }
   
   return {

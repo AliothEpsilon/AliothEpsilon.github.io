@@ -4,6 +4,7 @@ export interface ArticleMeta {
   tags?: string[]
   category?: string
   excerpt?: string
+  readingTime?: number
 }
 
 export interface Article extends ArticleMeta {
@@ -18,6 +19,7 @@ export interface ArticleListItem {
   tags?: string[]
   category?: string
   excerpt: string
+  readingTime?: number
 }
 
 export interface TOCItem {

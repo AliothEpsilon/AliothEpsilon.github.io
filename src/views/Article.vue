@@ -5,6 +5,13 @@
       <div class="article-meta">
         <span class="article-date">{{ formatDate(article.date) }}</span>
         <span v-if="article.category" class="article-category">{{ article.category }}</span>
+        <span v-if="article.readingTime" class="article-reading-time">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          {{ article.readingTime }} 分钟
+        </span>
       </div>
       <div v-if="article.tags && article.tags.length > 0" class="article-tags">
         <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
@@ -86,6 +93,18 @@ onMounted(async () => {
   font-size: var(--font-size-sm);
   color: var(--color-primary);
   font-weight: 500;
+}
+
+.article-reading-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.article-reading-time svg {
+  flex-shrink: 0;
 }
 
 .article-tags {

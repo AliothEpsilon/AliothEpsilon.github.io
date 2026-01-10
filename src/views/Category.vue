@@ -56,7 +56,8 @@ onMounted(async () => {
         date: article.date,
         tags: article.tags,
         category: article.category,
-        excerpt: article.excerpt || ''
+        excerpt: article.excerpt || '',
+        readingTime: article.readingTime
       }
     })
   )
