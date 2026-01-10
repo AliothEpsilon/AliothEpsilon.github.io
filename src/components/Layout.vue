@@ -27,6 +27,7 @@
     <footer class="footer">
       <div class="container">
         <p>&copy; {{ currentYear }} AliothEpsilon. All rights reserved.</p>
+        <p class="footer-note">本博客内容采用 MIT 许可证开源，转载请注明出处</p>
       </div>
     </footer>
   </div>
@@ -119,5 +120,10 @@ onMounted(() => {
   padding: var(--spacing-lg) 0;
   text-align: center;
   color: var(--color-text-light);
+}
+
+.footer-note {
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-sm);
 }
 </style>
