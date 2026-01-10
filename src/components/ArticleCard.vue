@@ -1,7 +1,14 @@
 <template>
   <article class="article-card">
     <RouterLink :to="`/article/${article.slug}`" class="article-link">
-      <h2 class="article-title">{{ article.title }}</h2>
+      <div class="article-header">
+        <h2 class="article-title">{{ article.title }}</h2>
+        <span v-if="article.pinned" class="pinned-badge" title="置顶文章">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+          </svg>
+        </span>
+      </div>
       <div class="article-meta">
         <span class="article-date">{{ formatDate(article.date) }}</span>
         <RouterLink 
@@ -55,11 +62,29 @@ defineProps<{
   color: inherit;
 }
 
+.article-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
 .article-title {
   font-size: var(--font-size-2xl);
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
   color: var(--color-text);
+}
+
+.pinned-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 4px;
 }
 
 .article-meta {

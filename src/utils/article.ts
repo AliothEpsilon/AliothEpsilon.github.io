@@ -10,7 +10,8 @@ export function parseFrontmatter(content: string, slug: string): Article {
     tags: result.data.tags || [],
     category: result.data.category || '',
     excerpt: result.data.excerpt || generateExcerpt(result.content),
-    readingTime: result.data.readingTime || calculateReadingTime(result.content).minutes
+    readingTime: result.data.readingTime || calculateReadingTime(result.content).minutes,
+    pinned: result.data.pinned || false
   }
   
   return {

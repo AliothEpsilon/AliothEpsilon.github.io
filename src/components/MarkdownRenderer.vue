@@ -45,10 +45,11 @@ const md: MarkdownIt = new MarkdownIt({
   highlight: function (str: string, lang: string): string {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return `<pre class="hljs"><code class="language-${lang}">${hljs.highlight(str, { language: lang }).value}</code></pre>`
+        const highlighted = hljs.highlight(str, { language: lang }).value
+        return `<pre class="hljs"><code class="language-${lang}">${highlighted.replace(/\n$/, '')}</code></pre>`
       } catch (__) {}
     }
-    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(str).replace(/\n$/, '')}</code></pre>`
   }
 })
 

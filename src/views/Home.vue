@@ -38,14 +38,17 @@ onMounted(async () => {
         tags: article.tags,
         category: article.category,
         excerpt: article.excerpt || '',
-        readingTime: article.readingTime
+        readingTime: article.readingTime,
+        pinned: article.pinned || false
       }
     })
   )
   
-  articles.value = articleList.sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
+  articles.value = articleList.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1
+    if (!a.pinned && b.pinned) return 1
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
+  })
 })
 </script>
 

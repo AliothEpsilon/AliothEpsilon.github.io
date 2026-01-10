@@ -5,6 +5,7 @@ export interface ArticleMeta {
   category?: string
   excerpt?: string
   readingTime?: number
+  pinned?: boolean
 }
 
 export interface Article extends ArticleMeta {
@@ -20,6 +21,7 @@ export interface ArticleListItem {
   category?: string
   excerpt: string
   readingTime?: number
+  pinned?: boolean
 }
 
 export interface TOCItem {
