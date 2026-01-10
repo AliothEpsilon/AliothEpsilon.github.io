@@ -9,6 +9,7 @@
 - **TypeScript** - JavaScript 的超集
 - **Vue Router** - Vue 官方路由
 - **Markdown-it** - Markdown 解析器
+- **Highlight.js** - 代码语法高亮
 
 ## 项目结构
 
@@ -21,6 +22,7 @@ blog/
 ├── src/
 │   ├── assets/          # 资源文件
 │   │   └── styles/
+│   │       ├── highlight.css  # 代码高亮样式
 │   │       ├── main.css # 全局样式
 │   │       └── variables.css  # CSS 变量
 │   ├── components/      # 组件
@@ -99,7 +101,7 @@ npm run preview
 ```markdown
 # 文章标题
 
-date: 2024-01-10
+date: 2025-01-10
 
 这里是文章内容...
 
@@ -178,9 +180,21 @@ console.log('Hello, World!')
 - ✅ 导航栏主题切换按钮
 - ✅ 主题切换动画效果
 
+### 第六阶段（已完成）
+
+- ✅ 代码语法高亮系统（基于 highlight.js）
+- ✅ 支持多种编程语言高亮（JavaScript、TypeScript、Python、CSS、HTML、Bash、JSON 等）
+- ✅ 代码行号显示
+- ✅ 代码复制按钮（右上角）
+- ✅ 复制成功提示动画
+- ✅ 深色/浅色主题下的代码样式适配
+- ✅ 代码块样式优化（背景色、边框、悬停效果）
+- ✅ 行号样式（颜色、对齐、间距）
+- ✅ 复制按钮样式（图标、悬停效果、点击反馈）
+- ✅ TypeScript 类型安全（md 变量类型注解、highlight 函数返回类型）
+
 ### 后续计划
 
-- [ ] 代码高亮
 - [ ] 评论系统集成
 - [ ] 阅读进度条
 - [ ] 目录导航（TOC）

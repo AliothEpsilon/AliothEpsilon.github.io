@@ -3,13 +3,51 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, nextTick } from 'vue'
 import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js/lib/core'
+import 'highlight.js/styles/github.css'
+import 'highlight.js/styles/github-dark.css'
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import python from 'highlight.js/lib/languages/python'
+import java from 'highlight.js/lib/languages/java'
+import go from 'highlight.js/lib/languages/go'
+import rust from 'highlight.js/lib/languages/rust'
+import cpp from 'highlight.js/lib/languages/cpp'
+import bash from 'highlight.js/lib/languages/bash'
+import css from 'highlight.js/lib/languages/css'
+import html from 'highlight.js/lib/languages/xml'
+import json from 'highlight.js/lib/languages/json'
+import yaml from 'highlight.js/lib/languages/yaml'
+import markdown from 'highlight.js/lib/languages/markdown'
 
-const md = new MarkdownIt({
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('python', python)
+hljs.registerLanguage('java', java)
+hljs.registerLanguage('go', go)
+hljs.registerLanguage('rust', rust)
+hljs.registerLanguage('cpp', cpp)
+hljs.registerLanguage('bash', bash)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('html', html)
+hljs.registerLanguage('json', json)
+hljs.registerLanguage('yaml', yaml)
+hljs.registerLanguage('markdown', markdown)
+
+const md: MarkdownIt = new MarkdownIt({
   html: true,
   linkify: true,
-  typographer: true
+  typographer: true,
+  highlight: function (str: string, lang: string): string {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre class="hljs"><code class="language-${lang}">${hljs.highlight(str, { language: lang }).value}</code></pre>`
+      } catch (__) {}
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`
+  }
 })
 
 const props = defineProps<{
@@ -19,6 +57,71 @@ const props = defineProps<{
 const renderedContent = computed(() => {
   return md.render(props.content)
 })
+
+onMounted(() => {
+  nextTick(() => {
+    addCopyButtons()
+    addLineNumbers()
+  })
+})
+
+const addCopyButtons = () => {
+  const codeBlocks = document.querySelectorAll('.markdown-renderer pre.hljs')
+  codeBlocks.forEach((block) => {
+    if (block.querySelector('.copy-button')) return
+    
+    const button = document.createElement('button')
+    button.className = 'copy-button'
+    button.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    `
+    button.addEventListener('click', async () => {
+      const code = block.querySelector('code')?.textContent || ''
+      try {
+        await navigator.clipboard.writeText(code)
+        button.classList.add('copied')
+        button.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        `
+        setTimeout(() => {
+          button.classList.remove('copied')
+          button.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          `
+        }, 2000)
+      } catch (err) {
+        console.error('Failed to copy:', err)
+      }
+    })
+    block.appendChild(button)
+  })
+}
+
+const addLineNumbers = () => {
+  const codeBlocks = document.querySelectorAll('.markdown-renderer pre.hljs')
+  codeBlocks.forEach((block) => {
+    const code = block.querySelector('code')
+    if (!code) return
+    
+    const lines = code.innerHTML.split('\n')
+    if (lines.length <= 1) return
+    
+    const lineNumbersHtml = lines.map((_, i) => `<span class="line-number">${i + 1}</span>`).join('')
+    const lineNumbersContainer = document.createElement('div')
+    lineNumbersContainer.className = 'line-numbers'
+    lineNumbersContainer.innerHTML = lineNumbersHtml
+    
+    block.insertBefore(lineNumbersContainer, code)
+  })
+}
 </script>
 
 <style scoped>
@@ -69,11 +172,13 @@ const renderedContent = computed(() => {
 }
 
 .markdown-renderer :deep(code) {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--code-bg);
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
+  color: var(--code-text);
+  border: 1px solid var(--code-border);
 }
 
 .markdown-renderer :deep(pre) {
@@ -83,12 +188,204 @@ const renderedContent = computed(() => {
   padding: var(--spacing-lg);
   overflow-x: auto;
   margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.markdown-renderer :deep(pre.hljs) {
+  background-color: var(--code-bg) !important;
+  border: 1px solid var(--code-border);
+  padding: 0 !important;
+  margin-bottom: var(--spacing-lg);
+  counter-reset: line;
+  display: flex !important;
+  overflow-x: auto;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.markdown-renderer :deep(pre.hljs:hover) {
+  border-color: var(--code-border-hover) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .markdown-renderer :deep(pre code) {
-  background-color: transparent;
-  padding: 0;
+  background-color: var(--code-bg) !important;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-sm) !important;
   border-radius: 0;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.9em !important;
+  line-height: 1.6 !important;
+  display: block;
+  white-space: pre !important;
+  flex: 1;
+  margin: 0 !important;
+  box-sizing: border-box;
+  min-height: calc(1.6em * 0.9);
+  color: var(--code-text) !important;
+}
+
+.markdown-renderer :deep(pre code .hljs) {
+  color: var(--code-text) !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-keyword),
+.markdown-renderer :deep(pre code .hljs-title) {
+  color: #d73a49 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-string),
+.markdown-renderer :deep(pre code .hljs-type),
+.markdown-renderer :deep(pre code .hljs-built_in),
+.markdown-renderer :deep(pre code .hljs-builtin-name) {
+  color: #032f62 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-number),
+.markdown-renderer :deep(pre code .hljs-literal) {
+  color: #005cc5 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-comment) {
+  color: #6a737d !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-function),
+.markdown-renderer :deep(pre code .hljs-title.function_) {
+  color: #6f42c1 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-variable) {
+  color: #e36209 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-attr),
+.markdown-renderer :deep(pre code .hljs-property) {
+  color: #005cc5 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-selector-tag),
+.markdown-renderer :deep(pre code .hljs-selector-class),
+.markdown-renderer :deep(pre code .hljs-selector-id) {
+  color: #22863a !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-selector-pseudo) {
+  color: #6f42c1 !important;
+}
+
+.markdown-renderer :deep(pre code .hljs-tag) {
+  color: #22863a !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-keyword),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-title) {
+  color: #ff7b72 !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-string),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-type),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-built_in),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-builtin-name) {
+  color: #a5d6ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-number),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-literal) {
+  color: #79c0ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-comment) {
+  color: #8b949e !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-function),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-title.function_) {
+  color: #d2a8ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-variable) {
+  color: #ffa657 !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-attr),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-property) {
+  color: #79c0ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-selector-tag),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-selector-class),
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-selector-id) {
+  color: #7ee787 !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-selector-pseudo) {
+  color: #d2a8ff !important;
+}
+
+[data-theme="dark"] .markdown-renderer :deep(pre code .hljs-tag) {
+  color: #7ee787 !important;
+}
+
+.markdown-renderer :deep(.line-numbers) {
+  flex-shrink: 0;
+  width: 3em !important;
+  min-width: 3em !important;
+  max-width: 3em !important;
+  padding: var(--spacing-md) var(--spacing-sm) var(--spacing-md) 0 !important;
+  text-align: right;
+  border-right: 1px solid var(--code-border) !important;
+  background-color: var(--code-bg-secondary) !important;
+  user-select: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.markdown-renderer :deep(.line-number) {
+  display: block;
+  color: var(--code-line-number);
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.9em !important;
+  line-height: 1.6 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+  min-height: calc(1.6em * 0.9);
+  align-self: flex-end;
+}
+
+.markdown-renderer :deep(.copy-button) {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background-color: var(--code-bg-secondary);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--code-text);
+  font-size: 0.85em;
+  transition: all 0.2s;
+}
+
+.markdown-renderer :deep(.copy-button:hover) {
+  background-color: var(--code-bg-hover);
+  border-color: var(--code-border-hover);
+}
+
+.markdown-renderer :deep(.copy-button.copied) {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.markdown-renderer :deep(.copy-button svg) {
+  width: 14px;
+  height: 14px;
 }
 
 .markdown-renderer :deep(ul),
