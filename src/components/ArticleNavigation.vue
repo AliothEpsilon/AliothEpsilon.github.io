@@ -1,7 +1,7 @@
 <template>
   <aside class="article-navigation">
     <h3 class="nav-title">文章归档</h3>
-    <div v-for="(group, year) in articlesByYear" :key="year" class="year-section">
+    <div v-for="(group, year) in sortedArticlesByYear" :key="year" class="year-section">
       <h4 class="year-header" @click="toggleYear(year)">
         {{ year }} <span class="article-count">({{ group.length }})</span>
         <span class="toggle-icon">{{ isYearCollapsed(year) ? '▶' : '▼' }}</span>
@@ -26,7 +26,7 @@ import { ref, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import type { ArticleListItem } from '../types/article'
 
-defineProps<{
+const props = defineProps<{
   articlesByYear: Record<string, ArticleListItem[]>
 }>()
 
@@ -49,6 +49,19 @@ const toggleYear = (year: string) => {
 const isYearCollapsed = (year: string) => {
   return collapsedYears.value.has(year)
 }
+
+const sortedArticlesByYear = computed(() => {
+  const years = Object.keys(props.articlesByYear).sort((a, b) => parseInt(b) - parseInt(a))
+  const result: Record<string, ArticleListItem[]> = {}
+  
+  years.forEach(year => {
+    result[year] = [...props.articlesByYear[year]].sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
+  })
+  
+  return result
+})
 
 const formatDate = (date: string) => {
   const d = new Date(date)
