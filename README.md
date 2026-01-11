@@ -27,9 +27,11 @@ blog/
 │   │       └── variables.css  # CSS 变量
 │   ├── components/      # 组件
 │   │   ├── ArticleCard.vue    # 文章卡片
+│   │   ├── ArticleNavigation.vue  # 文章归档导航
 │   │   ├── Layout.vue      # 布局组件
 │   │   ├── MarkdownRenderer.vue  # Markdown 渲染器
 │   │   ├── ReadingProgressBar.vue  # 阅读进度条
+│   │   ├── RecentArticles.vue  # 最新文章列表
 │   │   ├── SearchInput.vue  # 搜索输入框
 │   │   ├── TableOfContents.vue  # 目录导航组件
 │   │   └── ThemeToggle.vue # 主题切换组件
@@ -40,6 +42,7 @@ blog/
 │   ├── utils/           # 工具函数
 │   │   ├── aggregation.ts # 标签和分类聚合工具
 │   │   ├── article.ts   # Frontmatter 解析工具
+│   │   ├── calculateReadingTime.ts # 阅读时间计算工具
 │   │   ├── markdownItMathJax.ts # Markdown-it 数学公式插件
 │   │   ├── mathjax.ts   # MathJax 加载和配置工具
 │   │   ├── parseTOC.ts  # 目录解析工具
@@ -156,6 +159,10 @@ $$
 - ✅ 文章详情页
 - ✅ 基础样式系统
 - ✅ 响应式设计
+- ✅ 首页三栏布局（左侧文章归档导航、中间文章列表、右侧最新文章）
+- ✅ 固定定位侧边栏组件（导航栏、文章归档、最新文章）
+- ✅ 年份折叠/展开功能
+- ✅ 文章篇数统计显示
 
 ### 第二阶段（已完成）
 

@@ -53,7 +53,15 @@ defineProps<{
 
 <style scoped>
 .article-card {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius);
+  transition: box-shadow 0.2s;
+}
+
+.article-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .article-link {
@@ -70,9 +78,9 @@ defineProps<{
 }
 
 .article-title {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: 700;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
   color: var(--color-text);
 }
 
@@ -90,8 +98,8 @@ defineProps<{
 .article-meta {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .article-date {
@@ -119,8 +127,13 @@ defineProps<{
 
 .article-excerpt {
   color: var(--color-text-light);
-  line-height: 1.6;
-  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .article-tags {
