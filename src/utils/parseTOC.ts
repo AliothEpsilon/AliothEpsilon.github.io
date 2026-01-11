@@ -5,8 +5,18 @@ export function parseTOC(markdown: string): TOCItem[] {
   const lines = markdown.split('\n')
   const stack: TOCItem[] = []
   let inCodeBlock = false
+  let inFrontmatter = false
 
   lines.forEach((line) => {
+    if (line.trim() === '---') {
+      inFrontmatter = !inFrontmatter
+      return
+    }
+
+    if (inFrontmatter) {
+      return
+    }
+
     if (line.trim().startsWith('```')) {
       inCodeBlock = !inCodeBlock
       return
@@ -16,10 +26,10 @@ export function parseTOC(markdown: string): TOCItem[] {
       return
     }
 
-    const match = line.match(/^(#{1,6})\s+(.+)$/)
+    const match = line.match(/^(#{1,6})[ \t]+(.+)/)
     if (match) {
       const level = match[1].length
-      const text = match[2].trim()
+      const text = match[2].trim().replace(/\r$/, '')
       const id = generateId(text)
 
       const item: TOCItem = {
