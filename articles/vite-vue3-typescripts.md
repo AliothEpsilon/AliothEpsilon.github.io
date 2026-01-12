@@ -1,7 +1,7 @@
 ---
 title: Vite + Vue 3 + TypeScript 博客系统构建指南
 date: 2026-01-10
-category: 技术分享
+category: 前端
 tags:
   - Vite
   - Vue 3

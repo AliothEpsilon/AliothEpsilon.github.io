@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import type { TOCItem } from '../types/article'
 
 const props = defineProps<{
@@ -104,7 +104,7 @@ onUnmounted(() => {
 .table-of-contents {
   position: fixed;
   top: 100px;
-  right: 50px;
+  right: 10px;
   width: 200px;
   max-height: calc(100vh - 120px);
   overflow-y: auto;

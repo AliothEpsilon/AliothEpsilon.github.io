@@ -17,7 +17,7 @@
         <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
       </div>
       <MarkdownRenderer :content="article.content" />
-      <RouterLink to="/" class="back-link">← 返回首页</RouterLink>
+      <ArticlePrevNext :prevArticle="prevArticle" :nextArticle="nextArticle" />
     </div>
     <TableOfContents :items="toc" />
   </div>
@@ -28,22 +28,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownRenderer from '../components/MarkdownRenderer.vue'
 import TableOfContents from '../components/TableOfContents.vue'
+import ArticlePrevNext from '../components/ArticlePrevNext.vue'
 import { parseFrontmatter, formatDate } from '../utils/article'
 import { parseTOC } from '../utils/parseTOC'
-import type { Article } from '../types/article'
+import type { Article, ArticleListItem } from '../types/article'
 import type { TOCItem } from '../types/article'
 
 const route = useRoute()
 const article = ref<Article | null>(null)
 const toc = ref<TOCItem[]>([])
+const allArticles = ref<ArticleListItem[]>([])
 
-onMounted(async () => {
-  const slug = route.params.slug as string
-  
+const sortedArticles = computed(() => {
+  return [...allArticles.value].sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+})
+
+const prevArticle = computed(() => {
+  if (!article.value) return undefined
+  const currentIndex = sortedArticles.value.findIndex(a => a.slug === article.value?.slug)
+  if (currentIndex === -1 || currentIndex === sortedArticles.value.length - 1) return undefined
+  return sortedArticles.value[currentIndex + 1]
+})
+
+const nextArticle = computed(() => {
+  if (!article.value) return undefined
+  const currentIndex = sortedArticles.value.findIndex(a => a.slug === article.value?.slug)
+  if (currentIndex <= 0) return undefined
+  return sortedArticles.value[currentIndex - 1]
+})
+
+const loadArticle = async (slug: string) => {
   try {
     const articleModules = import.meta.glob('../../articles/*.md', { query: '?raw', import: 'default' })
     const articlePath = `../../articles/${slug}.md`
@@ -53,8 +73,41 @@ onMounted(async () => {
       article.value = parseFrontmatter(content, slug)
       toc.value = parseTOC(content)
     }
+    
+    const articles: ArticleListItem[] = []
+    for (const path in articleModules) {
+      const slugMatch = path.match(/articles\/(.+)\.md$/)
+      if (slugMatch) {
+        const articleSlug = slugMatch[1]
+        const articleContent = await articleModules[path]() as string
+        const parsedArticle = parseFrontmatter(articleContent, articleSlug)
+        articles.push({
+          slug: parsedArticle.slug,
+          title: parsedArticle.title,
+          date: parsedArticle.date,
+          tags: parsedArticle.tags,
+          category: parsedArticle.category,
+          excerpt: parsedArticle.excerpt || '',
+          readingTime: parsedArticle.readingTime,
+          pinned: parsedArticle.pinned
+        })
+      }
+    }
+    allArticles.value = articles
   } catch (error) {
     console.error('Failed to load article:', error)
+  }
+}
+
+onMounted(() => {
+  const slug = route.params.slug as string
+  loadArticle(slug)
+})
+
+watch(() => route.params.slug, (newSlug) => {
+  if (newSlug) {
+    loadArticle(newSlug as string)
+    window.scrollTo({ top: 0 })
   }
 })
 </script>
@@ -121,17 +174,6 @@ onMounted(async () => {
   border-radius: 9999px;
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
-}
-
-.back-link {
-  display: inline-block;
-  margin-top: var(--spacing-2xl);
-  color: var(--color-primary);
-  font-weight: 500;
-}
-
-.back-link:hover {
-  color: var(--color-primary-dark);
 }
 
 .not-found {
